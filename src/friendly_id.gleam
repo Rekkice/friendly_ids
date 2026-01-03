@@ -3,7 +3,7 @@ import gleam/int
 import gleam/list
 import gleam/string
 import iv
-import words
+import friendly_id/words
 
 /// This record contains the objects and predicates arrays, needed to generate a friendly ID.
 /// Should only be initialized once, then passed as a dependency.
