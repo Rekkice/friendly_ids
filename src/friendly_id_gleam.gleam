@@ -13,10 +13,6 @@ pub type Generator {
   )
 }
 
-pub type GeneratorError {
-  FileError
-}
-
 pub fn new_default_generator(separator: String) {
   new_generator(function.identity, separator)
 }
@@ -24,21 +20,19 @@ pub fn new_default_generator(separator: String) {
 pub fn new_generator(
   transform_fn: fn(String) -> String,
   separator: String,
-) -> Result(Generator, GeneratorError) {
-  case words.get_objects(), words.get_predicates() {
-    Ok(objects), Ok(predicates) ->
-      Generator(objects:, predicates:, generate: fn(generator: Generator) {
-        [
-          take_random_element(generator.predicates),
-          take_random_element(generator.objects),
-        ]
-        |> list.map(transform_fn)
-        |> string.join(separator)
-      })
-      |> Ok()
-
-    _, _ -> Error(FileError)
-  }
+) -> Generator {
+  Generator(
+    objects: words.get_objects(),
+    predicates: words.get_predicates(),
+    generate: fn(generator: Generator) {
+      [
+        take_random_element(generator.predicates),
+        take_random_element(generator.objects),
+      ]
+      |> list.map(transform_fn)
+      |> string.join(separator)
+    },
+  )
 }
 
 fn take_random_element(array: iv.Array(value)) -> value {
