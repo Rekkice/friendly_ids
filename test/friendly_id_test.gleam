@@ -1,13 +1,15 @@
+import gleam/string
+import friendly_id
 import gleeunit
 
 pub fn main() -> Nil {
   gleeunit.main()
 }
 
-// gleeunit test functions end in `_test`
-pub fn hello_world_test() {
-  let name = "Joe"
-  let greeting = "Hello, " <> name <> "!"
+pub fn generate_test() {
+  let generator = friendly_id.new_default_generator("_")
+  let id = generator.generate(generator)
 
-  assert greeting == "Hello, Joe!"
+  assert string.length(id) > 3
+  assert string.contains(id, "_")
 }
