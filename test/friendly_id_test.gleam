@@ -1,5 +1,5 @@
-import gleam/string
 import friendly_id
+import gleam/string
 import gleeunit
 
 pub fn main() -> Nil {
