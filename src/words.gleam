@@ -1,9 +1,11 @@
 import iv
 
+/// Get an iv.Array with the object words
 pub fn get_objects() -> iv.Array(String) {
   iv.from_list(objects)
 }
 
+/// Get an iv.Array with the predicate words
 pub fn get_predicates() -> iv.Array(String) {
   iv.from_list(predicates)
 }
