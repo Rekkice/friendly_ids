@@ -29,7 +29,7 @@ import gleam/string
 
 pub fn main() {
   let generator = friendly_id.new_generator(string.capitalize, "_")
-  echo generator.generate(generator)
+  echo generate(generator)
 }
 ```
 ```

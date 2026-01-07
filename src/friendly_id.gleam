@@ -11,7 +11,8 @@ pub type Generator {
   Generator(
     objects: iv.Array(String),
     predicates: iv.Array(String),
-    generate: fn(Generator) -> String,
+    transform_fn: fn(String) -> String,
+    separator: String,
   )
 }
 
@@ -23,7 +24,7 @@ pub type Generator {
 ///
 /// ```gleam
 /// let generator = new_default_generator("_")
-/// echo generator.generate(generator)
+/// echo generate(generator)
 /// ```
 pub fn new_default_generator(separator: String) {
   new_generator(function.identity, separator)
@@ -37,7 +38,7 @@ pub fn new_default_generator(separator: String) {
 ///
 /// ```gleam
 /// let generator = new_generator(string.uppercase, "_")
-/// echo generator.generate(generator)
+/// echo generate(generator)
 /// ```
 pub fn new_generator(
   transform_fn: fn(String) -> String,
@@ -46,15 +47,28 @@ pub fn new_generator(
   Generator(
     objects: words.get_objects(),
     predicates: words.get_predicates(),
-    generate: fn(generator: Generator) {
-      [
-        take_random_element(generator.predicates),
-        take_random_element(generator.objects),
-      ]
-      |> list.map(transform_fn)
-      |> string.join(separator)
-    },
+    transform_fn:,
+    separator:,
   )
+}
+
+/// Generates a friendly ID from a Generator record.
+///
+/// # Examples
+///
+/// ## Create a generator with an uppercase transform and a "_" separator, then generate an ID
+///
+/// ```gleam
+/// let generator = new_generator(string.uppercase, "_")
+/// echo generate(generator)
+/// ```
+pub fn generate(generator: Generator) -> String {
+  [
+    take_random_element(generator.predicates),
+    take_random_element(generator.objects),
+  ]
+  |> list.map(generator.transform_fn)
+  |> string.join(generator.separator)
 }
 
 fn take_random_element(array: iv.Array(value)) -> value {
