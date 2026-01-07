@@ -8,7 +8,7 @@ pub fn main() -> Nil {
 
 pub fn generate_test() {
   let generator = friendly_id.new_default_generator("_")
-  let id = generator.generate(generator)
+  let id = friendly_id.generate(generator)
 
   assert string.length(id) > 3
   assert string.contains(id, "_")
