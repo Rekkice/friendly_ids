@@ -7,7 +7,7 @@ import iv
 
 /// This record contains the objects and predicates arrays, needed to generate a friendly ID.
 /// Should only be initialized once, then passed as a dependency.
-pub type Generator {
+pub opaque type Generator {
   Generator(
     objects: iv.Array(String),
     predicates: iv.Array(String),
@@ -44,12 +44,14 @@ pub fn new_generator(
   transform_fn: fn(String) -> String,
   separator: String,
 ) -> Generator {
-  Generator(
-    objects: words.get_objects(),
-    predicates: words.get_predicates(),
-    transform_fn:,
-    separator:,
-  )
+  let objects = words.get_objects()
+  let predicates = words.get_predicates()
+  case iv.size(objects) > 0 && iv.size(predicates) > 0 {
+    True -> Generator(objects:, predicates:, transform_fn:, separator:)
+    // Word lists are compile-time constants; this branch only fires if
+    // get_objects/get_predicates are overridden to return empty lists.
+    False -> panic as "Generator requires non-empty word lists"
+  }
 }
 
 /// Generates a friendly ID from a Generator record.
@@ -72,10 +74,8 @@ pub fn generate(generator: Generator) -> String {
 }
 
 fn take_random_element(array: iv.Array(value)) -> value {
-  let index =
-    iv.size(array)
-    |> int.random()
-
+  let index = int.random(iv.size(array))
+  // Safe: array is non-empty (enforced by new_generator) and index is in 0..<size
   let assert Ok(element) = iv.get(from: array, at: index)
   element
 }
