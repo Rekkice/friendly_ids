@@ -1,81 +1,54 @@
-import friendly_id/words
-import gleam/function
+import friendly_id/generator
 import gleam/int
 import gleam/list
 import gleam/string
-import iv
-
-/// This record contains the objects and predicates arrays, needed to generate a friendly ID.
-/// Should only be initialized once, then passed as a dependency.
-pub type Generator {
-  Generator(
-    objects: iv.Array(String),
-    predicates: iv.Array(String),
-    transform_fn: fn(String) -> String,
-    separator: String,
-  )
-}
-
-/// Create a `Generator` record with no transform function.
-///
-/// # Examples
-///
-/// ## Create a generator with a "_" separator, then generate an ID
-///
-/// ```gleam
-/// let generator = new_default_generator("_")
-/// echo generate(generator)
-/// ```
-pub fn new_default_generator(separator: String) {
-  new_generator(function.identity, separator)
-}
-
-/// Create a `Generator` record with no transform function.
-///
-/// # Examples
-///
-/// ## Create a generator with an uppercase transform and a "_" separator, then generate an ID
-///
-/// ```gleam
-/// let generator = new_generator(string.uppercase, "_")
-/// echo generate(generator)
-/// ```
-pub fn new_generator(
-  transform_fn: fn(String) -> String,
-  separator: String,
-) -> Generator {
-  Generator(
-    objects: words.get_objects(),
-    predicates: words.get_predicates(),
-    transform_fn:,
-    separator:,
-  )
-}
+import glearray
 
 /// Generates a friendly ID from a Generator record.
 ///
 /// # Examples
 ///
-/// ## Create a generator with an uppercase transform and a "_" separator, then generate an ID
+/// ## Create a generator with defaults, then generate an ID
 ///
 /// ```gleam
-/// let generator = new_generator(string.uppercase, "_")
-/// echo generate(generator)
+/// let generator = generator.new()
+/// echo friendly_id.generate(generator)
 /// ```
-pub fn generate(generator: Generator) -> String {
-  [
-    take_random_element(generator.predicates),
-    take_random_element(generator.objects),
-  ]
-  |> list.map(generator.transform_fn)
-  |> string.join(generator.separator)
+pub fn generate(generator: generator.Generator) -> String {
+  [take_random_element(generator.get_objects(generator))]
+  |> prepend_predicates(
+    0,
+    generator.get_predicate_count(generator),
+    generator.get_predicates(generator),
+  )
+  |> list.map(generator.get_transform_fn(generator))
+  |> string.join(generator.get_separator(generator))
 }
 
-fn take_random_element(array: iv.Array(value)) -> value {
+fn take_random_element(array: glearray.Array(value)) -> value {
   let index =
-    iv.size(array)
+    glearray.length(array)
     |> int.random()
 
-  let assert Ok(element) = iv.get(from: array, at: index)
+  let assert Ok(element) = glearray.get(in: array, at: index)
   element
+}
+
+fn prepend_predicates(
+  acc: List(String),
+  count: Int,
+  max: Int,
+  predicates: glearray.Array(String),
+) -> List(String) {
+  case count == max {
+    True -> acc
+    False -> {
+      prepend_predicates(
+        [take_random_element(predicates), ..acc],
+        count + 1,
+        max,
+        predicates,
+      )
+    }
+  }
 }

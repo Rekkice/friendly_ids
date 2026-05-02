@@ -1,13 +1,13 @@
-import iv
+import glearray
 
-/// Get an iv.Array with the object words
-pub fn get_objects() -> iv.Array(String) {
-  iv.from_list(objects)
+/// Get an glearray.Array with the object words
+pub fn get_objects() -> glearray.Array(String) {
+  glearray.from_list(objects)
 }
 
-/// Get an iv.Array with the predicate words
-pub fn get_predicates() -> iv.Array(String) {
-  iv.from_list(predicates)
+/// Get an glearray.Array with the predicate words
+pub fn get_predicates() -> glearray.Array(String) {
+  glearray.from_list(predicates)
 }
 
 const objects = [

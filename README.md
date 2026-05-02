@@ -13,27 +13,39 @@ You can create something like:
 
 `https://chat.room/r/ShinyPenguin`
 
-Which makes the URL easier to share.
+which makes the URL easier to share.
 
 Words come from the [Glitch Project](https://github.com/glitchdotcom/friendly-words) and are curated to be inoffensive, safe for work and safe for children.
 
-There's 3064 objects and 1450 predicates, which means there's 4,442,800 possible combinations.
+There's 3064 objects and 1450 predicates, which means there's 4,442,800 possible combinations if you use the default predicate count (1). You can change the default count.
 
 ```sh
-gleam add friendly_id@1
+gleam add friendly_id@2
 ```
 
 ```gleam
 import friendly_id
+import friendly_id/generator
+import friendly_id/encoding
 import gleam/string
 
 pub fn main() {
-  let generator = friendly_id.new_generator(string.capitalize, "_")
-  echo generate(generator)
+  let generator =
+    generator.new()
+    |> generator.set_separator("_")
+    |> generator.set_transform_fn(string.capitalise)
+
+  // generate a random ID
+  echo friendly_id.generate(generator)
+
+  // encode an int
+  // this will always return the same ID as long as the word lists in the `Generator` remain the same
+  echo encoding.encode_int(generator, 23)
 }
 ```
 ```
-"Recondite-Leader"
+"Recondite_Leader"
+Ok("Simple_Tax")
 ```
 
 Further documentation can be found at <https://hexdocs.pm/friendly_id>.

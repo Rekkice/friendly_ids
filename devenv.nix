@@ -1,18 +1,12 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 
-let
-  pkgs-unstable = import inputs.nixpkgs-unstable { system = pkgs.stdenv.system; };
-in
 {
-  packages = with pkgs-unstable; [
+  packages = with pkgs; [
     gleam
     beamMinimal27Packages.erlang
     beamMinimal27Packages.rebar3
 
     inotify-tools
-
-    dbmate
-    sqlite
   ];
 
   languages.javascript.pnpm.enable = true;
