@@ -20,27 +20,25 @@ Words come from the [Glitch Project](https://github.com/glitchdotcom/friendly-wo
 There's 3064 objects and 1450 predicates, which means there's 4,442,800 possible combinations if you use the default predicate count (1). You can change the default count.
 
 ```sh
-gleam add friendly_id@2
+gleam add friendly_id@2.1.0
 ```
 
 ```gleam
 import friendly_id
-import friendly_id/generator
-import friendly_id/encoding
 import gleam/string
 
 pub fn main() {
   let generator =
-    generator.new()
-    |> generator.set_separator("_")
-    |> generator.set_transform_fn(string.capitalise)
+    new_generator()
+    |> set_generator_separator("_")
+    |> set_generator_transform_fn(string.capitalise)
 
   // generate a random ID
   echo friendly_id.generate(generator)
 
   // encode an int
   // this will always return the same ID as long as the word lists in the `Generator` remain the same
-  echo encoding.encode_int(generator, 23)
+  echo friendly_id.encode_int(generator, 23)
 }
 ```
 ```

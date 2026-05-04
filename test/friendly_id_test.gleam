@@ -1,5 +1,4 @@
 import friendly_id
-import friendly_id/generator
 import gleam/string
 import gleeunit
 
@@ -8,7 +7,8 @@ pub fn main() -> Nil {
 }
 
 pub fn generate_test() {
-  let generator = generator.new() |> generator.set_separator("_")
+  let generator =
+    friendly_id.new_generator() |> friendly_id.set_generator_separator("_")
   let id = friendly_id.generate(generator)
 
   assert string.length(id) > 3
